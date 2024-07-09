@@ -1,43 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { FiMapPin } from 'react-icons/fi';
 import { MdOutlineContactPhone } from 'react-icons/md';
+import { AxiosWithHeader } from '../../services/httpService';
+import AuthContext from '../../context/authContext';
+import UserCardPhoneDetail from './userCardPhoneDetail';
+import UserCardAddressDetail from './userCardAddressDetail';
 
 const UserTableComponent = (props) => {
     const { } = props;
+    const authContext = useContext(AuthContext)
     const [state, setState] = useState({
+        loading: true,
         columns: [
-            { name: 'ID', selector: row => row.title, },
-            { name: 'Nombre', selector: row => row.title, },
-            { name: 'Paterno', selector: row => row.year, },
-            { name: 'Materno', selector: row => row.year, },
+            { name: 'ID', selector: row => row.id, },
+            { name: 'Nombre', selector: row => row.nombre, },
+            { name: 'Paterno', selector: row => row.paterno, },
+            { name: 'Materno', selector: row => row.materno, },
         ],
-        data: [
-            { id: 1, title: 'Beetlejuice', year: '1988', },
-            { id: 2, title: 'Ghostbusters', year: '1984', },
-        ],
+        data: [],
     });
     const ExpandedComponent = ({ data }) => <>
-        <div className="flex flex-wrap px-1 py-2 gap-2 justify-between bg-neutral-100">
-            <div className="flex flex-col flex-wrap">
+        <div className="flex flex-wrap px-1 py-2 gap-3 bg-neutral-100">
+            <div className="flex flex-col flex-wrap w-[48%] overflow-x-hidden">
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <MdOutlineContactPhone />
                     <div>Teléfonos registrados</div>
                 </div>
-                <div className='flex'>{JSON.stringify(data, null, 2)}</div>
+                <div className='flex gap-2 mt-2 overflow-x-scroll w-full'>
+                    {  data.telefonos.map( (detail) => <UserCardPhoneDetail detail={detail} /> ) }
+                </div>
             </div>
-            <div className="flex flex-col flex-wrap">
+            <div className="flex flex-col flex-wrap w-[48%] overflow-x-hidden">
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <FiMapPin />
                     <div>Direcciones registradas</div>
                 </div>
-                <div className='flex'>{JSON.stringify(data, null, 2)}</div>
+                <div className='flex gap-2 mt-2 overflow-x-scroll w-full'>
+                    {  data.direcciones.map( (detail) => <UserCardAddressDetail detail={detail} /> ) }
+                </div>
             </div>
         </div>
         
     </>;
 
     useEffect(() => {
+        AxiosWithHeader("/api/people", "GET", null, authContext.token).then((peopleResponse) => {
+            setState({...state, data: peopleResponse.data, loading: false})
+        }).catch(() => {
+            setState({...state, loading: false})
+        })
     }, [])
     return (
         <>
@@ -47,6 +59,7 @@ const UserTableComponent = (props) => {
                 expandableRows
                 expandableRowsComponent={ExpandedComponent}
                 pagination
+                progressPending={state.loading}
             />
         </>
     );

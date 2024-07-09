@@ -4,26 +4,43 @@ import { CustomDragDrop } from "./container";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { AxiosWithHeaderFiles } from "../../services/httpService";
 import AuthContext from "../../context/authContext";
+import { createTopNotification } from "../utilities/notification";
 
 export default function DragComponent() {
-  const [ownerLicense, setOwnerLicense] = useState([]);
+  // const [state.files, setFiles] = useState([]);
+  const [state, setState] = useState({
+    loading:false , files:[]
+  })
   const authContext = useContext(AuthContext)
   function uploadFiles(f) {
-    setOwnerLicense([...ownerLicense, ...f]);
+    setState({ ...state, files: [...state.files, ...f]});
   }
 
   function deleteFile(indexImg) {
-    const updatedList = ownerLicense.filter((ele, index) => index !== indexImg);
-    setOwnerLicense(updatedList);
+    const updatedList = state.files.filter((ele, index) => index !== indexImg);
+    setState({...state, files: updatedList});
   }
 
   function uploadFileToDB() {
+    setState({...state, loading: true})
     const formData = new FormData();
 
-    for (let i = 0; i < ownerLicense.length; i++) {
-      formData.append('files[]', ownerLicense[i].file, ownerLicense[i].name );
+    for (let i = 0; i < state.files.length; i++) {
+      formData.append('files[]', state.files[i].file, state.files[i].name );
     }
-    AxiosWithHeaderFiles('/api/bulkLoad', formData , authContext.token )
+    AxiosWithHeaderFiles('/api/bulkLoad', formData , authContext.token ).then(() => {
+      createTopNotification(2000).fire({
+        icon: "success",
+        title: "Archivo procesado correctamente ! "
+      })
+      setState({...state, loading: false , files:[] })
+
+    }).catch( () =>{
+      createTopNotification(2000).fire({
+        icon: "error",
+        title: "Formato no válido  "
+      })
+    })
   }
 
   return (
@@ -41,8 +58,8 @@ export default function DragComponent() {
             Puedes arrastrar un archivo excel y procesarlo para una carga masiva de usuarios
           </div>
         </div>
-        <button disabled={ownerLicense.length == 0} className={`px-1 rounded border-2 cursor-pointer content-center
-        ${(ownerLicense.length > 0) ? "border-neutral-700 text-neutral-700" :
+        <button disabled={state.files.length == 0 || state.loading} className={`px-1 rounded border-2 cursor-pointer content-center
+        ${(state.files.length > 0 && !state.loading) ? "border-neutral-700 text-neutral-700" :
             "border-neutral-300 text-neutral-300"
           } 
         `}
@@ -50,7 +67,7 @@ export default function DragComponent() {
         >Procesar archivo</button>
       </div>
       <CustomDragDrop
-        ownerLicense={ownerLicense}
+        filesData={state.files}
         onUpload={uploadFiles}
         onDelete={deleteFile}
         count={1}

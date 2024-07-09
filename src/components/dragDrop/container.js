@@ -3,9 +3,12 @@ import { FaUpload, FaRegFileImage, FaRegFile } from "react-icons/fa";
 import { BsX } from "react-icons/bs";
 import Swal from "sweetalert2";
 import { base64ToArrayBuffer, convertExcelToCSV, convertFileBase64, createBlobFromCSV } from "../../utilities/fileUtilities";
+import { TopNotification, createTopNotification } from "../utilities/notification";
+import { validateCSVHeaders } from "../utilities/csv";
+import { expectedHeadersConstant } from "./constants/headerConstants";
 
 export function CustomDragDrop({
-  ownerLicense,
+  filesData,
   onUpload,
   onDelete,
   count,
@@ -34,7 +37,7 @@ export function CustomDragDrop({
       );
     });
 
-    if (ownerLicense.length >= count) {
+    if (filesData.length >= count) {
       showAlert(
         "warning",
         "Maximo de archivos",
@@ -65,6 +68,11 @@ export function CustomDragDrop({
       const nFiles = files.map(async (file) => {
         const base64String = await convertFileBase64(file);
         const csvData = await convertExcelToCSV(base64ToArrayBuffer(base64String))
+        if(!validateCSVHeaders(csvData, expectedHeadersConstant)){
+          
+          return null;
+        }
+        
         const blob = createBlobFromCSV(csvData)
         return {
           name: file.name,
@@ -75,11 +83,19 @@ export function CustomDragDrop({
       });
 
       Promise.all(nFiles).then((newFiles) => {
-        onUpload(newFiles);
-        TopNotification.fire({
-          icon: "success",
-          title: "Archivo cargado"
-        });
+        if(!newFiles[0]){
+          showAlert(
+            "warning",
+            "Formato incorrecto",
+            `El formato del archivo es incorrecto, favor de revisarlo y cargar un archivo correcto`
+          );
+        }else{
+          onUpload(newFiles);
+          createTopNotification(2000).fire({
+            icon: "success",
+            title: "Archivo cargado"
+          });
+        }
       });
     }
   }
@@ -107,19 +123,8 @@ export function CustomDragDrop({
         dropContainer.current.removeEventListener("dragleave", handleDragLeave);
       }
     };
-  }, [ownerLicense]);
+  }, [filesData]);
 
-  const TopNotification = Swal.mixin({
-    toast: true,
-    position: "bottom-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener("mouseenter", Swal.stopTimer);
-      toast.addEventListener("mouseleave", Swal.resumeTimer);
-    }
-  });
 
   function showAlert(icon, title, text) {
     Swal.fire({
@@ -173,9 +178,9 @@ export function CustomDragDrop({
         </div>
       </div>
 
-      {ownerLicense.length > 0 && (
+      {filesData.length > 0 && (
         <div className="mt-4 grid grid-cols-2 gap-y-4 gap-x-4">
-          {ownerLicense.map((img, index) => (
+          {filesData.map((img, index) => (
             <div className="w-full px-3 py-3.5 rounded-md bg-slate-200 space-y-3">
               <div className="flex justify-between">
                 <div className="w-[70%] flex justify-start items-center space-x-2">

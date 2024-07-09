@@ -14,6 +14,9 @@ function App() {
     user: {}, token: null 
   });
 
+  const logout = () =>{
+    setState({user: {}, token: null})
+  }
   useEffect(() => {
     const userData = localStorage.getItem('userData');
     if (userData) {
@@ -24,7 +27,7 @@ function App() {
   return (
     <Router>
 
-      <AuthContext.Provider value={state}>
+      <AuthContext.Provider value={{...state, logout}}>
 
         <Routes>
           {state.token ? (
