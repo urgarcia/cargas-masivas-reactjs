@@ -35,8 +35,6 @@ export function convertBase64ToBlob(base64, mime) {
     return new Blob([ab], { type: mime });
   }
 export const convertExcelToCSV = async (buffer) => {
-    debugger
-    // const buffer = await blob.ArrayBuffer();
     const workbook = XLSX.read(buffer, { type: 'buffer' });
   
     const sheetName = workbook.SheetNames[0];

@@ -4,6 +4,7 @@ import HomeComponent from '../home/home';
 import WelcomeComponent from './welcome';
 import BottomMenuComponent from './bottomMenu';
 import UsersListComponent from '../users/usersList';
+import ProfileComponent from '../profile/profile';
  
 function Layout() {
     return (
@@ -13,6 +14,7 @@ function Layout() {
                 <Routes>
                     <Route path="/" element={<UsersListComponent />} />
                     <Route path="/uploadFile" element={<HomeComponent />} />
+                    <Route path="/profile" element={<ProfileComponent />} />
                 </Routes>
                 <BottomMenuComponent authorizedMenus={[1,2]}/>
 

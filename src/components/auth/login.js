@@ -34,7 +34,10 @@ const LoginComponent = (props) => {
     }, [])
     return (
         <>
-            <div className='w-full h-[100vh] bg-neutral-200 flex flex-wrap justify-center items-center'>
+            <div className='w-full h-[100vh] bg-neutral-300 flex flex-col gap-2 flex-wrap justify-center items-center relative'>
+                <div className=''>
+                    <img class="object-cover object-top w-full max-w-[12rem]" src='/imgs/K2i-Logo.png' alt='Mountain' />
+                </div>
                 {/* <div className="max-w-[15rem] max-h-[15rem] rounded p-2 bg-neutral-400 flex flex-col"> */}
                     {/* FORM LOGIN */}
                     <div className='flex flex-col'>
@@ -70,7 +73,7 @@ const LoginComponent = (props) => {
                             </div>
                         </form>
 
-                        <p className="text-center text-gray-500 text-xs">
+                        <p className="text-center text-gray-700 text-xs">
                             &copy;2024 Uriel Garcia | Todos los derechos reservados.
                         </p>
 

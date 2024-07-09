@@ -49,7 +49,6 @@ export const AxiosWithHeaderFiles = async (url, body, tokenReq= null) =>{
   const token = (tokenReq) ? tokenReq : localStorage.getItem("userData").token;
   
   const urll = host + url
-  debugger
   try {
       const response = await axios.post(urll, body, {
         headers: {

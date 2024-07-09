@@ -23,8 +23,6 @@ export default function DragComponent() {
     for (let i = 0; i < ownerLicense.length; i++) {
       formData.append('files[]', ownerLicense[i].file, ownerLicense[i].name );
     }
-    console.log(formData)
-    debugger
     AxiosWithHeaderFiles('/api/bulkLoad', formData , authContext.token )
   }
 
