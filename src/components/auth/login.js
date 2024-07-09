@@ -40,7 +40,7 @@ const LoginComponent = (props) => {
         })
         setTimeout(() => {
             setAppState(newState)
-            localStorage.setItem("userData", newState)
+            localStorage.setItem("userData", JSON.stringify(newState) )
             handleInputChange('loading', false)
         }, 1000);
     }
@@ -50,7 +50,7 @@ const LoginComponent = (props) => {
         <>
             <div className='w-full h-[100vh] bg-neutral-300 flex flex-col gap-2 flex-wrap justify-center items-center relative'>
                 <div className=''>
-                    <img class="object-cover object-top w-full max-w-[12rem]" src='/imgs/K2i-Logo.png' alt='Mountain' />
+                    <img className="object-cover object-top w-full max-w-[12rem]" src='/imgs/K2i-Logo.png' alt='Mountain' />
                 </div>
                 {/* <div className="max-w-[15rem] max-h-[15rem] rounded p-2 bg-neutral-400 flex flex-col"> */}
                     {/* FORM LOGIN */}

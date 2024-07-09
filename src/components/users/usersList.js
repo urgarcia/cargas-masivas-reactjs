@@ -10,7 +10,7 @@ const UsersListComponent = (props) => {
     }, [])
     return (
         <>
-            <div className="flex flex-wrap flex-col px-4 py-2">
+            <div className="flex flex-wrap flex-col px-4 py-2 w-[100vw]">
                 <TitlePageComponent Icon={FaUsers} name={"Usuarios"} description={"Consulta los usuarios registrados, telefonos y direcciones"}/>
                 <UserTableComponent />
             </div>

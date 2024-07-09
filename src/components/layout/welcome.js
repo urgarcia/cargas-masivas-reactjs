@@ -5,7 +5,6 @@ import { AxiosWithHeader } from '../../services/httpService';
 
 const WelcomeComponent = (props) => {
     const { } = props;
-    const [state, setState] = useState({});
     const authContext = useContext(AuthContext)
     const logout = async () =>{
         AxiosWithHeader('/api/logout', 'GET', null, authContext.token)

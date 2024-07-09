@@ -5,17 +5,24 @@ import WelcomeComponent from './welcome';
 import BottomMenuComponent from './bottomMenu';
 import UsersListComponent from '../users/usersList';
 import ProfileComponent from '../profile/profile';
+import AdminWrapper from '../../protectedWrapper/adminWrapper';
  
 function Layout() {
     return (
         <>
             <div className="flex flex-wrap flex-col">
                 <WelcomeComponent />
-                <Routes>
-                    <Route path="/" element={<UsersListComponent />} />
-                    <Route path="/uploadFile" element={<HomeComponent />} />
-                    <Route path="/profile" element={<ProfileComponent />} />
-                </Routes>
+                <div className='flex flex-wrap flex-col mb-[4rem]'>
+                    <Routes>
+                        <Route path="/" element={<UsersListComponent />} />
+                        <Route path="/profile" element={<ProfileComponent />} />
+                            <Route path="/uploadFile" element={
+                                <AdminWrapper >
+                                    <HomeComponent />
+                                </AdminWrapper>
+                            }/>
+                    </Routes>
+                </div>
                 <BottomMenuComponent authorizedMenus={[1,2]}/>
 
             </div>

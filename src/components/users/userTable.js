@@ -21,8 +21,8 @@ const UserTableComponent = (props) => {
         data: [],
     });
     const ExpandedComponent = ({ data }) => <>
-        <div className="flex flex-wrap px-1 py-2 gap-3 bg-neutral-100">
-            <div className="flex flex-col flex-wrap w-[48%] overflow-x-hidden">
+        <div className="flex flex-wrap px-1 py-2 gap-4 bg-neutral-100">
+            <div className="flex flex-col flex-wrap max-w-[45vw] min-w-[45vw] overflow-x-hidden">
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <MdOutlineContactPhone />
                     <div>Teléfonos registrados</div>
@@ -31,7 +31,7 @@ const UserTableComponent = (props) => {
                     {  data.telefonos.map( (detail) => <UserCardPhoneDetail detail={detail} /> ) }
                 </div>
             </div>
-            <div className="flex flex-col flex-wrap w-[48%] overflow-x-hidden">
+            <div className="flex flex-col flex-wrap max-w-[45vw] min-w-[45vw] overflow-x-hidden">
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <FiMapPin />
                     <div>Direcciones registradas</div>

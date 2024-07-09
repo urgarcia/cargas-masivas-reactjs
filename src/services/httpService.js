@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const host = process.env.REACT_APP_API_HOST 
 
 export const AxiosWithoutHeader = async (url, method, body , contentType = 'application/json') =>{
@@ -37,13 +36,6 @@ export const AxiosWithHeader = async (url, method, body , tokenReq, contentType 
         console.error(error);
         throw new Error("Error en la peticion axios ")
     }
-}
-function toJSON(file){
-  return {
-    name: file.name,
-    type: file.type,
-    size: file.size,
-  };
 }
 export const AxiosWithHeaderFiles = async (url, body, tokenReq= null) =>{
   const token = (tokenReq) ? tokenReq : localStorage.getItem("userData").token;

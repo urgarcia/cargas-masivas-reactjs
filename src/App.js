@@ -1,50 +1,57 @@
 
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, redirect } from 'react-router-dom';
 import AuthContext from './context/authContext';
 
 import LoginComponent from './components/auth/login';
 import './styles/App.css';
 import Layout from './components/layout/layout';
 import AuthWrapper from './protectedWrapper/authWrapper';
+import SplashScreenComponent from './components/layout/splashScreen';
 
 
 function App() {
   const [state, setState] = useState({
-    user: {}, token: null 
+    user: {}, token: null , loading: true
   });
 
   const logout = () =>{
-    setState({user: {}, token: null})
+    redirect('/')
+    setState({user: {}, token: null, loading: false})
   }
   useEffect(() => {
     const userData = localStorage.getItem('userData');
     if (userData) {
-      setState(userData)
+      setState({...JSON.parse(userData), loading: false })
     }
   }, []);
 
   return (
-    <Router>
+    <>
+      {state.loading ? 
+        <SplashScreenComponent/>:       
+        <Router>
 
-      <AuthContext.Provider value={{...state, logout}}>
+          <AuthContext.Provider value={{...state, logout}}>
 
-        <Routes>
-          {state.token ? (
-            <Route path="/*"  element={
-              <AuthWrapper>
-                <Layout />
-              </AuthWrapper>
-            }
-            />
-          ) : (
-            <Route path="/" element={<LoginComponent setAppState={setState} appState={state} />} /> // Reemplaza con tu componente de login
-          )}
-        </Routes>
+            <Routes>
+              {state.token ? (
+                <Route path="/*"  element={
+                  <AuthWrapper>
+                    <Layout />
+                  </AuthWrapper>
+                }
+                />
+              ) : (
+                <Route path="/*" element={<LoginComponent setAppState={setState} appState={state} />} /> // Reemplaza con tu componente de login
+              )}
+            </Routes>
 
-      </AuthContext.Provider>
+          </AuthContext.Provider>
 
-    </Router>
+        </Router>
+      }
+    </>
   );
 }
 
