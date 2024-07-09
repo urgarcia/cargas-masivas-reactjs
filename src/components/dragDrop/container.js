@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { FaUpload, FaRegFileImage, FaRegFile } from "react-icons/fa";
 import { BsX } from "react-icons/bs";
 import Swal from "sweetalert2";
+import { base64ToArrayBuffer, convertExcelToCSV, convertFileBase64, createBlobFromCSV } from "../../utilities/fileUtilities";
 
 export function CustomDragDrop({
   ownerLicense,
@@ -63,9 +64,11 @@ export function CustomDragDrop({
     if (files && files.length) {
       const nFiles = files.map(async (file) => {
         const base64String = await convertFileBase64(file);
+        const csvData = await convertExcelToCSV(base64ToArrayBuffer(base64String))
+        const blob = createBlobFromCSV(csvData)
         return {
           name: file.name,
-          photo: base64String,
+          file: blob,
           type: file.type,
           size: file.size
         };
@@ -81,19 +84,7 @@ export function CustomDragDrop({
     }
   }
 
-  async function convertFileBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
-
+  
   useEffect(() => {
     function handleDragOver(e) {
       e.preventDefault();
@@ -141,14 +132,6 @@ export function CustomDragDrop({
     });
   }
 
-  function showImage(image) {
-    Swal.fire({
-      imageUrl: image,
-      showCloseButton: true,
-      showConfirmButton: false,
-      width: 450
-    });
-  }
 
   return (
     <>

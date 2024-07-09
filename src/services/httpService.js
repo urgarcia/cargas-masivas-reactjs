@@ -1,40 +1,84 @@
-import axios from 'axios';
+import axios from "axios";
 
-class HttpService {
-  constructor() {
-    this.baseURL = process.env.REACT_APP_API_HOST;
-  }
+const host = process.env.REACT_APP_API_HOST 
 
-  async request(config) {
+export const AxiosWithoutHeader = async (url, method, body , contentType = 'application/json') =>{
+
     try {
-      const response = await axios({
-        ...config,
-        baseURL: this.baseURL,
-        headers: {
-          Authorization: config.token ? `Bearer ${config.token}` : '',
-        },
-      });
-      return response.data;
+        const response = await axios({
+            method,
+            url: host + url,
+            data: body,
+            headers: {
+                'Content-Type': contentType
+              }
+          })
+        return response;
     } catch (error) {
-      if (error.response) {
-        throw new Error(error.response.data.message || error.response.statusText);
-      } else {
-        throw new Error(error.message);
-      }
+        console.error(error);
+        throw new Error("Error en la peticion axios ")
     }
-  }
+}
+export const AxiosWithHeader = async (url, method, body , tokenReq, contentType = 'application/json') =>{
+    const token = (tokenReq) ? tokenReq : localStorage.getItem("userData").token;
 
-  upload(url, formData, config = {}) {
-    return this.request({
-      url,
-      method: 'POST',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        ...(config.headers || {}),
-      },
-    });
+    try {
+        const response = await axios({
+            method,
+            url: host + url,
+            data: body,
+            headers: {
+                'Content-Type': contentType,
+                'Authorization': 'Bearer ' + token
+              }
+          })
+        return response;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Error en la peticion axios ")
+    }
+}
+function toJSON(file){
+  return {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+  };
+}
+export const AxiosWithHeaderFiles = async (url, body, tokenReq= null) =>{
+  const token = (tokenReq) ? tokenReq : localStorage.getItem("userData").token;
+  
+  const urll = host + url
+  debugger
+  try {
+      const response = await axios.post(urll, body, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          'Authorization': "Bearer " + token
+        },
+      })
+      return response;
+  } catch (error) {
+      console.error(error);
+      throw new Error("Error en la peticion axios ")
   }
 }
 
-export default HttpService;
+// promises -> PUEDEN SER VARIOS ARREGLOS DE PROMESAS 
+// data -> ARREGLO DE DATOS DE LAS PROMESAS QUIERO DEVOLVER ESTO...
+export const debouncePromises = (promises, callback) => {
+  const timer = setTimeout(() => {
+    Promise.all(promises)
+      .then((dataResponse) => {
+        callback(dataResponse);
+      })
+      .catch((e) => {
+        console.error('Error al obtener información', e);
+      })
+      .finally(() => {
+        // Cualquier lógica que desees ejecutar después de obtener los datos
+      });
+  }, 500);
+
+  return () => clearTimeout(timer);
+};
