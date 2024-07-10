@@ -8,14 +8,19 @@ const UserCardAddressDetail = (props) => {
     },[])
     return (
         <>
-            <div className="flex flex-col rounded p-1 border-2 border-neutral-300 gap-2
-            hover:border-neutral-700 ease-in duration-500 cursor-pointer
+            <div className="flex flex-col rounded p-1 border-2 border-neutral-300 gap-2 min-w-[7rem]
+            hover:border-neutral-700 ease-in duration-500 cursor-pointer relative
             ">
-                <div> <FaLocationArrow /> </div>
-                <div className='flex gap-1'> 
-                    <div>{detail.calle}</div>
-                    <div>#{detail.numero_exterior}</div> 
-                    <div>{detail.numero_interior ? "Int: " + detail.numero_interior   : ""}</div> 
+                <div className='absolute'> <FaLocationArrow  size={15} className='text-gray-500' /> </div>
+                <div className='flex flex-col mt-3'> 
+                    <div className="flex flex-wrap gap-2">
+                        <div>{detail.calle}</div>
+                        <div className='text-sm text-gray-500'>#{detail.numero_exterior}</div> 
+                    </div>
+                    {detail.numero_interior ? 
+                    <div className='text-gray-700 text-sm mt-[-5px]'>INT: {detail.numero_interior}</div> : ""
+                    }
+                    <div className='text-gray-600 text-sm mt-[-5px]'>CP: { detail.cp }</div> 
                 </div>
             </div>
         </>

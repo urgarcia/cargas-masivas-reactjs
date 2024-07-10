@@ -25,7 +25,8 @@ const UserTableComponent = (props) => {
             <div className="flex flex-col flex-wrap max-w-[45vw] min-w-[45vw] overflow-x-hidden">
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <MdOutlineContactPhone />
-                    <div>Teléfonos registrados</div>
+                    <div>Teléfonos registrados </div>
+                    <div>- {data.telefonos.length}</div>
                 </div>
                 <div className='flex gap-2 mt-2 overflow-x-scroll w-full'>
                     {  data.telefonos.map( (detail) => <UserCardPhoneDetail detail={detail} /> ) }
@@ -35,6 +36,7 @@ const UserTableComponent = (props) => {
                 <div className='flex gap-2 border-b-[1px] border-neutral-300'>
                     <FiMapPin />
                     <div>Direcciones registradas</div>
+                    <div>- {data.direcciones.length}</div>
                 </div>
                 <div className='flex gap-2 mt-2 overflow-x-scroll w-full'>
                     {  data.direcciones.map( (detail) => <UserCardAddressDetail detail={detail} /> ) }
